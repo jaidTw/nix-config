@@ -45,6 +45,10 @@
         workspace_swipe = true;
       };
 
+      monitor = [
+        "eDP-1,2880x1920@60,auto,2"
+      ];
+
       general = {
         gaps_in = 5;
         gaps_out = 20;
@@ -138,7 +142,6 @@
 
       bind =
         [
-          "$mod, C, killactive"
           "$mod, E, exec, $filemanager"
           "$mod, F, exec, $browser"
           "$mod, J, togglesplit"
@@ -149,7 +152,7 @@
           "$mod, Q, exec, $terminal"
           "$mod, R, exec, $menu -show run"
           "$mod, F11, fullscreen"
-          "ALT, F4, closewindow"
+          "ALT, F4, killactive"
 
           "$mod, left, movefocus, l"
           "$mod, right, movefocus, r"
@@ -182,7 +185,7 @@
               let
                 ws =
                   let
-                    c = (x + 1) / 10;
+                    c = (x + 2) / 10;
                   in
                   builtins.toString (x + 1 - (c * 10));
               in

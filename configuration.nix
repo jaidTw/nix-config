@@ -5,11 +5,6 @@
 { pkgs, ... }:
 
 {
-  imports = [
-    # Include the results of the hardware scan.
-    ./hardware-configuration.nix
-  ];
-
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
@@ -32,10 +27,14 @@
     }
   ];
 
-  networking.hostName = "X1e-nixos"; # Define your hostname.
-  # Pick only one of the below networking options.
-  #networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  networking.networkmanager.enable = true; # Easiest to use and most distros use this by default.
+  networking.hostName = "FW13-nix"; # Define your hostname.
+  networking.firewall.checkReversePath = false;
+  networking.networkmanager = {
+    enable = true;
+    wifi = {
+      backend = "iwd";
+    };
+  };
 
   time.timeZone = "Asia/Taipei";
 
@@ -66,15 +65,12 @@
   #   useXkbConfig = true; # use xkb.options in tty.
   # };
 
-  # Enable the X11 windowing system.
-  # services.xserver.enable = true;
-
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
   # services.xserver.xkb.options = "eurosign:e,caps:escape";
 
   # Enable CUPS to print documents.
-  # services.printing.enable = true;
+  services.printing.enable = true;
 
   security = {
     pam.services = {
@@ -90,6 +86,8 @@
   };
   # Enable sound.
   services = {
+    blueman.enable = true;
+    fwupd.enable = true;
     pipewire = {
       enable = true;
       alsa.enable = true;
@@ -126,12 +124,8 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    alacritty
-    bottom
     cmake
     clang
-    cowsay
-    dotacat
     dust
     duf
     fd
@@ -142,25 +136,20 @@
     gcc14
     binutils
     git
+    gnumake
     greetd.tuigreet
     killall
     llvm
-    mpc-cli
     neofetch
-    neovim
     ninja
     nixfmt-rfc-style
-    nyancat
     p7zip
+    pkg-config
     python3
-    ripgrep
     rustup
     socat
-    qemu
-    tig
-    tmux
-    trippy
     unar
+    unzip
     wget
     wireguard-go
     wireguard-tools
@@ -171,19 +160,19 @@
 
   gtk.iconCache.enable = true;
   programs = {
-    hyprland.enable = true;
-    zsh.enable = true;
-    nm-applet.enable = true;
-    gdk-pixbuf.modulePackages = [ pkgs.librsvg ];
     dconf.enable = true;
+    gdk-pixbuf.modulePackages = [ pkgs.librsvg ];
+    hyprland.enable = true;
+    nm-applet.enable = true;
 
     # Some programs need SUID wrappers, can be configured further or are
     # started in user sessions.
-    # programs.mtr.enable = true;
     gnupg.agent = {
       enable = true;
       enableSSHSupport = true;
     };
+    trippy.enable = true;
+    zsh.enable = true;
   };
 
   fonts = {
@@ -252,11 +241,6 @@
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
-
-  # Copy the NixOS configuration file and link it from the resulting system
-  # (/run/current-system/configuration.nix). This is useful in case you
-  # accidentally delete configuration.nix.
-  # system.copySystemConfiguration = true;
 
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.

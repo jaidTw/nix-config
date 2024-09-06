@@ -11,22 +11,26 @@
     ./zsh.nix
     ./tmux.nix
     inputs.catppuccin.homeManagerModules.catppuccin
+    inputs.ags.homeManagerModules.default
   ];
 
   home.stateVersion = "24.05";
   home.packages = with pkgs; [
     acpi
+    google-chrome
     nemo
     networkmanager_dmenu
     nomacs
     nwg-look
     nwg-displays
     overskride
-    sassc
     slack
     telegram-desktop
+    tig
     udiskie
+    youtube-music
     zed-editor
+    zoom-us
     hicolor-icon-theme
     gnome-icon-theme
     adwaita-icon-theme
@@ -59,6 +63,15 @@
   };
 
   programs = {
+    ags = {
+      enable = true;
+      configDir = ./desktop/ags;
+      extraPackages = with pkgs; [
+        gtksourceview
+        webkitgtk
+        accountsservice
+      ];
+    };
     alacritty = {
       enable = true;
       settings = {
@@ -68,6 +81,7 @@
       };
     };
     bat.enable = true;
+    bottom.enable = true;
     fd.enable = true;
     firefox.enable = true;
     fzf = {
@@ -93,6 +107,10 @@
     git = {
       enable = true;
       delta.enable = true;
+      extraConfig = {
+        color.ui = true;
+        core.editor = "nvim";
+      };
       userEmail = "jessehuang2222@gmail.com";
       userName = "Jesse Huang";
     };
@@ -102,21 +120,20 @@
     lsd.enableAliases = true;
     man.enable = true;
     mpv.enable = true;
+    ripgrep.enable = true;
     starship = {
       enable = true;
       settings = {
         format = ''
-          [╭─](white)$os$direnv$directory$git_branch$git_state$git_status$status
-          [╰─](white)[❯](bold green)
+[╭─](white)$os$direnv$directory$git_branch$git_state$git_status$status
+[╰─](white)[❯](bold green) 
         '';
-        right_format = ''$nix_shell$rust$cmd_duration'';
+        right_format = ''$rust$cmd_duration'';
         add_newline = false;
         directory.style = "bold fg:105";
         directory.truncate_to_repo = false;
         direnv.disabled = false;
         git_branch.style = "bold pink";
-        nix_shell.disabled = false;
-        nix_shell.heuristic = true;
         os.disabled = false;
         status.disabled = false;
       };
@@ -126,6 +143,8 @@
     zoxide.enableZshIntegration = true;
   };
   services = {
+    easyeffects.enable = true;
+    easyeffects.preset = "Gracefu's Edits";
     mako = {
       enable = true;
       defaultTimeout = 15000;
@@ -139,10 +158,7 @@
       margin = "10";
       padding = "5,5,20,10";
     };
-    mpd = {
-      enable = true;
-      musicDirectory = "~/Musics";
-    };
+    ssh-agent.enable = true;
     udiskie = {
       enable = true;
       notify = true;

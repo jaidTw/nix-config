@@ -45,15 +45,16 @@
       pmoduleDirs = [ "${config.home.homeDirectory}/.zprezto-contrib" ];
     };
     shellAliases = {
+      cat = "bat -p";
       btm = "btm --battery";
       df = "duf";
       du = "dust";
       htop = "btm";
+      less = "bat -p";
       ping = "trip";
       traceroute = "trip";
       mtr = "trip";
       nixos-update = "sudo nixos-rebuild switch";
-      cat = "bat -p";
     };
     sessionVariables = {
       MANROFFOPT = "-c";
