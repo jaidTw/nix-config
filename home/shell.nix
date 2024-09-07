@@ -56,7 +56,12 @@
         directory.truncate_to_repo = false;
         direnv.disabled = false;
         git_branch.style = "bold pink";
-        os.disabled = false;
+        os = {
+          disabled = false;
+          style ="bold fg:45";
+          symbols.NixOS = " ";
+          symbols.Macos = "  ";
+        };
         status.disabled = false;
       };
     };
