@@ -80,67 +80,10 @@
         font.size = 14;
       };
     };
-    bat.enable = true;
-    bottom.enable = true;
-    fd.enable = true;
     firefox.enable = true;
-    fzf = {
-      enable = true;
-      changeDirWidgetCommand = "fd --type d";
-      changeDirWidgetOptions = [ "--preview 'lsd --tree {} | head -200'" ];
-      defaultCommand = "fd --type f --follow --hidden --exclude .git";
-      fileWidgetCommand = "fd --type f --follow --hidden --exclude .git";
-      fileWidgetOptions = [
-        "--height 60%"
-        "--layout reverse"
-        "--info inline"
-        "--border"
-        "--preview 'bat --style=numbers --color=always --line-range :500 {}'"
-        "--color 'fg:#bbccdd,fg+:#ddeeff,bg:#334455,preview-bg:#223344,border:#778899'"
-      ];
-      historyWidgetOptions = [
-        "--sort"
-        "--exact"
-      ];
-      #tmux.enableShellIntegration = true;
-    };
-    git = {
-      enable = true;
-      delta.enable = true;
-      extraConfig = {
-        color.ui = true;
-        core.editor = "nvim";
-      };
-      userEmail = "jessehuang2222@gmail.com";
-      userName = "Jesse Huang";
-    };
-    jq.enable = true;
-    lazygit.enable = true;
-    lsd.enable = true;
-    lsd.enableAliases = true;
-    man.enable = true;
+    fd.enable = true;
     mpv.enable = true;
-    ripgrep.enable = true;
-    starship = {
-      enable = true;
-      settings = {
-        format = ''
-[╭─](white)$os$direnv$directory$git_branch$git_state$git_status$status
-[╰─](white)[❯](bold green) 
-        '';
-        right_format = ''$rust$cmd_duration'';
-        add_newline = false;
-        directory.style = "bold fg:105";
-        directory.truncate_to_repo = false;
-        direnv.disabled = false;
-        git_branch.style = "bold pink";
-        os.disabled = false;
-        status.disabled = false;
-      };
-    };
     wlogout.enable = true;
-    zoxide.enable = true;
-    zoxide.enableZshIntegration = true;
   };
   services = {
     easyeffects.enable = true;

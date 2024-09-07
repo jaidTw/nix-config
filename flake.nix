@@ -1,24 +1,27 @@
 {
-  description = "Jesse's NixOS configuration";
+  description = "Jesse's Nix configuration";
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
-    catppuccin.url = "github:catppuccin/nix";
+    nix-darwin.url = "github:LnL7/nix-darwin";
+    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nixvim.url = "github:nix-community/nixvim";
     nixvim.inputs.nixpkgs.follows = "nixpkgs";
+    catppuccin.url = "github:catppuccin/nix";
     ags.url = "github:Aylur/ags";
   };
 
   outputs =
     {
       self,
-      nixpkgs,
       catppuccin,
-      home-manager,
+      nixpkgs,
+      nix-darwin,
       nixos-hardware,
+      home-manager,
       ...
     }@inputs:
     {
@@ -47,5 +50,27 @@
           }
         ];
       };
+
+      darwinConfigurations."Jesse-MBP" = nix-darwin.lib.darwinSystem {
+        modules = [
+          ./darwin-configuration.nix
+          home-manager.darwinModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.jaid = import ./home/darwin-home.nix;
+            home-manager.extraSpecialArgs = {
+              inherit inputs;
+            };
+          }
+        ];
+        specialArgs = {
+          inherit inputs;
+          inherit self;
+        };
+      };
+
+      # Expose the package set, including overlays, for convenience.
+      darwinPackages = self.darwinConfigurations."Jesse-MBP".pkgs;
     };
 }
