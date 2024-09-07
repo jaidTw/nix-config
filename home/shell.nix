@@ -59,7 +59,7 @@
         os = {
           disabled = false;
           style ="bold fg:45";
-          symbols.NixOS = " ";
+          symbols.NixOS = "  ";
           symbols.Macos = "  ";
         };
         status.disabled = false;

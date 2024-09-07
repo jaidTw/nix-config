@@ -8,7 +8,7 @@
     ./desktop/hyprlock.nix
     ./desktop/rofi.nix
     ./nixvim.nix
-    ./zsh.nix
+    ./shell.nix
     ./tmux.nix
     inputs.catppuccin.homeManagerModules.catppuccin
     inputs.ags.homeManagerModules.default
@@ -76,7 +76,7 @@
       enable = true;
       settings = {
         window.opacity = 0.8;
-        font.normal.family = "FiraCode Nerd Font Mono";
+        font.normal.family = "MesloLGS Nerd Font Mono";
         font.size = 14;
       };
     };
