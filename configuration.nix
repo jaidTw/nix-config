@@ -2,7 +2,12 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ pkgs, ... }:
+{
+  pkgs,
+  config,
+  asztal,
+  ...
+}:
 
 {
   nix.settings.experimental-features = [
@@ -78,52 +83,65 @@
       hyprlock.fprintAuth = true;
       polkit-1.fprintAuth = true;
       sudo.fprintAuth = true;
+      ags = { };
     };
+    rtkit.enable = true;
     sudo = {
       enable = true;
       configFile = "Defaults timestamp_timeout=25\n";
     };
   };
-  # Enable sound.
   services = {
+    accounts-daemon.enable = true;
     blueman.enable = true;
     fwupd.enable = true;
+    gnome = {
+      evolution-data-server.enable = true;
+      glib-networking.enable = true;
+      gnome-keyring.enable = true;
+      gnome-online-accounts.enable = true;
+    };
+    greetd = {
+      enable = true;
+      settings.default_session.command = pkgs.writeShellScript "greeter" ''
+        export XKB_DEFAULT_LAYOUT=${config.services.xserver.xkb.layout}
+        export XCURSOR_THEME=catppuccin-frappe-lavender-cursors
+        ${asztal}/bin/greeter
+      '';
+    };
+    gvfs.enable = true;
+    libinput.enable = true;
+    openssh.enable = true;
     pipewire = {
       enable = true;
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
     };
-
-    # Enable touchpad support (enabled default in most desktopManager).
-    libinput.enable = true;
-    openssh.enable = true;
+    #playerctld.enable = true;
+    samba-wsdd.enable = true;
     thermald.enable = true;
-    greetd = {
-      enable = true;
-      settings = {
-        default_session = {
-          command = "tuigreet --cmd hyprland";
-        };
-      };
-    };
+    upower.enable = true;
     udisks2.enable = true;
   };
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.jaid = {
     isNormalUser = true;
     extraGroups = [
       "wheel"
+      "audio"
       "video"
+      "networkmanager"
+      "docker"
+      "libvirtd"
     ];
     shell = pkgs.zsh;
   };
   nixpkgs.config.allowUnfree = true;
 
   # List packages installed in system profile. To search, run:
-  # $ nix search wget
   environment.systemPackages = with pkgs; [
+    brightnessctl
     cmake
     clang
     dust
@@ -137,7 +155,6 @@
     binutils
     git
     gnumake
-    greetd.tuigreet
     killall
     llvm
     neofetch
@@ -153,7 +170,6 @@
     wget
     wireguard-go
     wireguard-tools
-    wluma
     wl-clipboard-rs
   ];
   environment.pathsToLink = [ "/share/zsh" ];
@@ -162,11 +178,11 @@
   programs = {
     dconf.enable = true;
     gdk-pixbuf.modulePackages = [ pkgs.librsvg ];
-    hyprland.enable = true;
+    hyprland = {
+      enable = true;
+      xwayland.enable = true;
+    };
     nm-applet.enable = true;
-
-    # Some programs need SUID wrappers, can be configured further or are
-    # started in user sessions.
     gnupg.agent = {
       enable = true;
       enableSSHSupport = true;
@@ -177,6 +193,7 @@
 
   fonts = {
     packages = with pkgs; [
+      cantarell-fonts
       noto-fonts-cjk-sans
       noto-fonts-cjk-serif
       noto-fonts-color-emoji
@@ -184,10 +201,12 @@
       icomoon-feather
       (nerdfonts.override {
         fonts = [
-          "FiraCode"
-          "Meslo"
           "DaddyTimeMono"
+          "FiraCode"
           "JetBrainsMono"
+          "Meslo"
+          "Ubuntu"
+          "UbuntuMono"
         ];
       })
     ];
@@ -195,8 +214,8 @@
       enable = true;
       defaultFonts = {
         emoji = [ "Noto Color Emoji" ];
-        monospace = [ "MesloLGM Nerd Font Mono" ];
-        sansSerif = [ "Noto Sans CJK TC" ];
+        monospace = [ "MesloLGM Nerd Font" ];
+        sansSerif = [ "Ubuntu" ];
         serif = [ "Noto Serif CJK TC" ];
       };
       localConf = ''
@@ -232,9 +251,32 @@
     };
   };
 
-  hardware = {
-    brillo.enable = true;
-  };
+  systemd.tmpfiles.rules = [
+    "d '/var/cache/greeter' - greeter greeter - -"
+  ];
+
+  system.activationScripts.wallpaper =
+    let
+      wp = pkgs.writeShellScript "wp" ''
+        CACHE="/var/cache/greeter"
+        OPTS="$CACHE/options.json"
+        HOME="/home/$(find /home -maxdepth 1 -printf '%f\n' | tail -n 1)"
+
+        mkdir -p "$CACHE"
+        chown greeter:greeter $CACHE
+
+        if [[ -f "$HOME/.cache/ags/options.json" ]]; then
+          cp $HOME/.cache/ags/options.json $OPTS
+          chown greeter:greeter $OPTS
+        fi
+
+        if [[ -f "$HOME/.config/background" ]]; then
+          cp "$HOME/.config/background" $CACHE/background
+          chown greeter:greeter "$CACHE/background"
+        fi
+      '';
+    in
+    builtins.readFile wp;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];

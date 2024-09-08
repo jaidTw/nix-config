@@ -12,6 +12,7 @@
     nixvim.inputs.nixpkgs.follows = "nixpkgs";
     catppuccin.url = "github:catppuccin/nix";
     ags.url = "github:Aylur/ags";
+    matugen.url = "github:InioX/matugen?ref=v2.2.0";
   };
 
   outputs =
@@ -25,17 +26,19 @@
       ...
     }@inputs:
     {
-      packages.x86_64-linux.default =
-        nixpkgs.legacyPackages.x86_64-linux.callPackage ./home/desktop/ags {inherit inputs;};
+      packages.x86_64-linux.default = nixpkgs.legacyPackages.x86_64-linux.callPackage ./home/desktop/ags {
+        inherit inputs;
+      };
       # for nixos module home-manager installations
       nixosConfigurations.FW13-nix = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
           inherit inputs;
-          my-ags = self.packages.x86_64-linux.default;
+          asztal = self.packages.x86_64-linux.default;
         };
         modules = [
           ./configuration.nix
+          ./virtualisation.nix
           ./hardware/FW13-Ryzen7040/hardware-configuration.nix
           catppuccin.nixosModules.catppuccin
           nixos-hardware.nixosModules.framework-13-7040-amd

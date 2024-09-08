@@ -23,7 +23,7 @@
   which,
 }:
 let
-  name = "my-ags";
+  name = "asztal";
 
   ags = inputs.ags.packages.${system}.default.override {
     extraPackages = [ accountsservice ];
@@ -52,7 +52,7 @@ let
 
   greeter = writeShellScript "greeter" ''
     export PATH=$PATH:${addBins dependencies}
-    ${cage}/bin/cage -ds -m last ${ags}/bin/ags -- -c ${config}/greeter.js
+    XDG_CACHE_HOME=/var/cache/greeter ${cage}/bin/cage -ds -m last ${ags}/bin/ags -- -c ${config}/greeter.js
   '';
 
   desktop = writeShellScript name ''

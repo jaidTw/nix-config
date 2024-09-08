@@ -1,7 +1,22 @@
 # home.nix
 
 { pkgs, inputs, ... }:
+let
 
+  iconTheme = {
+    name = "Papirus";
+    package = pkgs.papirus-icon-theme;
+  };
+  cursorTheme = {
+    name = "catppuccin-frappe-lavender-cursors";
+    package = pkgs.catppuccin-cursors.frappeLavender;
+    size = 40;
+  };
+  theme = {
+    name = "Fluent-grey-Dark";
+    package = (pkgs.fluent-gtk-theme.override { themeVariants = [ "grey" ]; });
+  };
+in
 {
   imports = [
     ./desktop/hyprland.nix
@@ -14,47 +29,52 @@
     inputs.ags.homeManagerModules.default
   ];
 
-  home.stateVersion = "24.05";
-  home.packages = with pkgs; [
-    acpi
-    google-chrome
-    nemo
-    networkmanager_dmenu
-    nomacs
-    nwg-look
-    nwg-displays
-    overskride
-    slack
-    telegram-desktop
-    tig
-    udiskie
-    youtube-music
-    zed-editor
-    zoom-us
-    hicolor-icon-theme
-    gnome-icon-theme
-    adwaita-icon-theme
-  ];
+  home = {
+    stateVersion = "24.05";
+    packages = with pkgs; [
+      acpi
+      google-chrome
+      nemo
+      networkmanager_dmenu
+      nomacs
+      obs-studio
+      playerctl
+      slack
+      telegram-desktop
+      tig
+      youtube-music
+      zed-editor
+      iconTheme.package
+      theme.package
+      cursorTheme.package
+    ];
+    sessionVariables = {
+      XCURSOR_THEME = cursorTheme.name;
+      XCURSOR_SIZE = "${toString cursorTheme.size}";
+    };
+  };
   catppuccin.enable = true;
   catppuccin.accent = "mauve";
   catppuccin.flavor = "macchiato";
 
-  gtk = with pkgs; {
+  gtk = {
+    inherit iconTheme theme cursorTheme;
     enable = true;
     font.name = "Noto Sans CJK TC Regular";
-    iconTheme = {
-      name = "Dracula";
-      package = dracula-icon-theme;
-    };
-    cursorTheme = {
-      name = "catppuccin-frappe-lavender-cursors";
-      package = catppuccin-cursors.frappeLavender;
-      size = 40;
-    };
-    theme = {
-      name = "Fluent-grey-Dark";
-      package = (fluent-gtk-theme.override { themeVariants = [ "grey" ]; });
-    };
+    font.size = 11;
+    gtk3.extraCss = ''
+      headerbar, .titlebar,
+      .csd:not(.popup):not(tooltip):not(messagedialog) decoration{
+        border-radius: 0;
+      }
+    '';
+    gtk4.extraCss = ''
+      window.messagedialog .response-area > button,
+      window.dialog.message .dialog-action-area > button,
+      .background.csd{
+        border-radius: 0;
+      }
+    '';
   };
   qt = {
     enable = true;
@@ -76,32 +96,26 @@
       enable = true;
       settings = {
         window.opacity = 0.8;
-        font.normal.family = "MesloLGS Nerd Font Mono";
+        font.normal.family = "MesloLGS Nerd Font";
         font.size = 14;
       };
     };
     firefox.enable = true;
     fd.enable = true;
     mpv.enable = true;
+    thunderbird = {
+      enable = true;
+      profiles = {
+        "jaid" = {
+          isDefault = true;
+        };
+      };
+    };
     wlogout.enable = true;
   };
   services = {
     easyeffects.enable = true;
-    easyeffects.preset = "Gracefu's Edits";
-    mako = {
-      enable = true;
-      defaultTimeout = 15000;
-      font = "Noto Sans CJK TC 14";
-      icons = true;
-      # FIXME: don't use hard-coded path
-      iconPath = "/etc/profiles/per-user/jaid/share/icons/Dracula:/etc/profiles/per-user/jaid/share/icons/Adwaita:/etc/profiles/per-user/jaid/share/icons/hicolor:/etc/profiles/per-user/jaid/share/pixmaps";
-      height = 110;
-      width = 300;
-      borderRadius = 6;
-      margin = "10";
-      padding = "5,5,20,10";
-    };
-    ssh-agent.enable = true;
+    easyeffects.preset = "Gracefus+Edits";
     udiskie = {
       enable = true;
       notify = true;

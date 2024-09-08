@@ -1,24 +1,71 @@
 # hyprland.nix
 
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 
 {
   home.packages = with pkgs; [
+    bun
+    dart-sass
+    font-awesome
+    gnome-characters
+    gnome-color-manager
+    gnome-control-center
+    gnome-weather
+    grimblast
     hyprland-workspaces
-    hyprpaper
     hypridle
     hyprpicker
     hyprshade
     hyprland-monitor-attached
-    grimblast
+    inputs.matugen.packages.${system}.default
     kdePackages.qtwayland
     libnotify
+    nwg-look
+    nwg-displays
+    pavucontrol
     qt5ct
     qt6ct
+    swww
+    udiskie
+    adwaita-icon-theme
+    dracula-icon-theme
+    gnome-icon-theme
+    hicolor-icon-theme
+    morewaita-icon-theme
+    papirus-icon-theme
+    qogir-icon-theme
   ];
 
+  xdg.desktopEntries."org.gnome.Settings" = {
+    name = "Settings";
+    comment = "Gnome Control Center";
+    icon = "org.gnome.Settings";
+    exec = "env XDG_CURRENT_DESKTOP=gnome ${pkgs.gnome-control-center}/bin/gnome-control-center";
+    categories = [ "X-Preferences" ];
+    terminal = false;
+  };
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-hyprland
+      xdg-desktop-portal-gtk
+    ];
+    config = {
+      hyprland = {
+        default = [
+          "hyprland"
+          "gtk"
+        ];
+        "org.freedesktop.ScreenSaver" = [
+          "gtk"
+        ];
+      };
+    };
+  };
+
   wayland.windowManager.hyprland = {
-    systemd.enable = false;
+    systemd.enable = true;
     enable = true;
 
     plugins = with pkgs; [ hyprlandPlugins.hyprexpo ];
@@ -114,17 +161,17 @@
 
       exec-once = [
         #"/etc/nixos/home/desktop/migrate-workspaces.sh"
-        "hyprpaper"
+        "playerctld daemon"
+        "ags -b hypr"
         "hypridle"
         "hyprctl setcursor catppuccin-frappe-lavender-cursors 36"
         "fcitx5 -d -r"
-        "fcitx5-remote -r"
       ];
 
       env = [
         "HYPRCURSOR_THEME, catppuccin-frappe-lavender-cursors"
         "GDK_SCALE, 2"
-        "XCURSOR_SIZE, 40"
+        "XCURSOR_SIZE, 18"
         "HYPRCURSOR_SIZE, 36"
 
         "GDK_BACKEND,wayland,x11,*"
@@ -141,11 +188,16 @@
       ];
 
       bind =
+        let
+          e = "exec, ags -b hypr";
+        in
         [
+          "CTRL SHIFT, R,  ${e} quit; ags -b hypr"
+          "$mod, Tab,     ${e} -t overview"
           "$mod, E, exec, $filemanager"
           "$mod, F, exec, $browser"
           "$mod, J, togglesplit"
-          "$mod, L, exec, wlogout"
+          "$mod, L, exec, -t powermenu"
           "$mod, M, exit"
           "$mod, P, pseudo"
           "$mod SHIFT, P, pin"
@@ -153,6 +205,7 @@
           "$mod, R, exec, $menu -show run"
           "$mod, F11, fullscreen"
           "ALT, F4, killactive"
+          "ALT, Tab, focuscurrentorlast"
 
           "$mod, left, movefocus, l"
           "$mod, right, movefocus, r"
@@ -163,6 +216,7 @@
           "$mod ALT, right, swapwindow, r"
           "$mod ALT, up, swapwindow, u"
           "$mod ALT, down, swapwindow, d"
+          ", XF86AudioMedia,  exec, youtube-music"
 
           "$mod CTRL, left, workspace, e-1"
           "$mod CTRL, right, workspace, e+1"
@@ -171,7 +225,8 @@
           "$mod SHIFT, S, movetoworkspace, special:magic"
 
           "SUPER_SHIFT, E, exec, rofi -mode emoji -show emoji"
-          "ALT, Space, exec, $menu -show-icons -show drun"
+          "ALT, Space, ${e} -t launcher"
+          ",XF86PowerOff,  ${e} -r 'powermenu.shutdown()'"
           "$mod, V, togglefloating"
           ", Print, exec, grimblast copy area"
           "$mod, grave, hyprexpo:expo, toggle"
@@ -196,7 +251,10 @@
             ) 10
           )
         );
-      bindm = [ "ALT, mouse:272, movewindow" ];
+      bindm = [
+        "$mod, mouse:272, movewindow"
+        "$mod, mouse:273, resizewindow"
+      ];
 
       binde = [
         "$mod SHIFT, left, resizeactive, -10 0"
@@ -206,8 +264,10 @@
       ];
 
       bindel = [
-        ",XF86MonBrightnessUp, exec, brillo -qA 5"
-        ",XF86MonBrightnessDown, exec, brillo -qU 5"
+        ",XF86MonBrightnessUp,   exec, brightnessctl s +5%"
+        ",XF86MonBrightnessDown, exec, brightnessctl s  5%-"
+        ",XF86KbdBrightnessUp,   exec, brightnessctl -d framework_laptop::kbd_backlight set +1"
+        ",XF86KbdBrightnessDown, exec, brightnessctl -d framework_laptop::kbd_backlight set  1-"
         ",XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"
         ",XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
       ];
@@ -215,13 +275,40 @@
       bindl = [
         ",XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
         ",XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+        ",XF86AudioPlay,    exec, playerctl play-pause"
+        ",XF86AudioStop,    exec, playerctl pause"
+        ",XF86AudioPause,   exec, playerctl pause"
+        ",XF86AudioPrev,    exec, playerctl previous"
+        ",XF86AudioNext,    exec, playerctl next"
         ",switch:on:Lid switch, exec, hyprctl keyword monitor \"eDP-1, disable\""
-        ",switch:off:Lid switch, exec, hyprctl keyword monitor \"eDP-1, auto, preferred, 1\""
+        ",switch:off:Lid switch, exec, hyprctl keyword monitor \"eDP-1, auto, preferred, 2\""
       ];
+
+      windowrule =
+        let
+          f = regex: "float, ^(${regex})$";
+        in
+        [
+          (f "telegram-desktop")
+          (f "nemo")
+          (f "mpv")
+          (f "fcitx5-config-qt")
+          (f "pavucontrol")
+          (f "org.gnome.Settings")
+          (f "nm-connection-editor")
+          (f "blueberry.py")
+          (f "org.gnome.design.Palette")
+          (f "Color Picker")
+          (f "xdg-desktop-portal")
+          (f "xdg-desktop-portal-gnome")
+          (f "de.haeckerfelix.Fragments")
+          (f "com.github.Aylur.ags")
+        ];
 
       windowrulev2 = [
         "pseudo, class:(fcitx)"
         "suppressevent maximize, class:.*"
+        "float, class:(Zoom Workplace)"
       ];
 
     };
@@ -238,8 +325,8 @@
         listener = [
           {
             timeout = 150;
-            on-timeout = "brillo -O; brillo -qS 10";
-            on-resume = "brillo -I 10";
+            on-timeout = "brightnessctl -s; brightnessctl s 7%";
+            on-resume = "brightnessctl -r";
           }
           {
             timeout = 330;
@@ -254,21 +341,6 @@
             timeout = 1800;
             on-timeout = "systemctl suspend";
           }
-        ];
-      };
-    };
-    hyprpaper = {
-      enable = true;
-      settings = {
-        ipc = "off";
-        splash = true;
-        splash_offset = 2.0;
-
-        preload = [ "~/wallpaper/wallpaper.png" ];
-
-        wallpaper = [
-          "eDP-1,~/wallpaper/wallpaper.png"
-          "HDMI-A-1,~/wallpaper/wallpaper.png"
         ];
       };
     };

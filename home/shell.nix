@@ -58,9 +58,9 @@
         git_branch.style = "bold pink";
         os = {
           disabled = false;
-          style ="bold fg:45";
-          symbols.NixOS = "  ";
-          symbols.Macos = "  ";
+          style = "bold fg:45";
+          symbols.NixOS = " ";
+          symbols.Macos = " ";
         };
         status.disabled = false;
       };

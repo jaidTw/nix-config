@@ -41,25 +41,25 @@ const options = mkOptions(OPTIONS, {
             border: opt("#080808"),
         },
 
-        blur: opt(0),
+        blur: opt(15),
         scheme: opt<"dark" | "light">("dark"),
-        widget: { opacity: opt(94) },
+        widget: { opacity: opt(90) },
         border: {
             width: opt(1),
-            opacity: opt(96),
+            opacity: opt(0),
         },
 
         shadows: opt(true),
-        padding: opt(7),
-        spacing: opt(12),
-        radius: opt(11),
+        padding: opt(5),
+        spacing: opt(8),
+        radius: opt(8),
     },
 
     transition: opt(200),
 
     font: {
-        size: opt(13),
-        name: opt("Ubuntu Nerd Font"),
+        size: opt(11),
+        name: opt("Ubuntu Nred Font Regular"),
     },
 
     bar: {
@@ -101,14 +101,14 @@ const options = mkOptions(OPTIONS, {
             action: opt(() => App.toggleWindow("launcher")),
         },
         date: {
-            format: opt("%H:%M - %A %e."),
+            format: opt("%R%t%A %-m/%-d"),
             action: opt(() => App.toggleWindow("datemenu")),
         },
         battery: {
-            bar: opt<"hidden" | "regular" | "whole">("regular"),
+            bar: opt<"hidden" | "regular" | "whole">("whole"),
             charging: opt("#00D787"),
             percentage: opt(true),
-            blocks: opt(7),
+            blocks: opt(8),
             width: opt(50),
             low: opt(30),
         },
@@ -117,7 +117,7 @@ const options = mkOptions(OPTIONS, {
         },
         taskbar: {
             iconSize: opt(0),
-            monochrome: opt(true),
+            monochrome: opt(false),
             exclusive: opt(false),
         },
         messages: {
@@ -127,13 +127,14 @@ const options = mkOptions(OPTIONS, {
             ignore: opt([
                 "KDE Connect Indicator",
                 "spotify-client",
+                "youtube-music",
             ]),
         },
         media: {
-            monochrome: opt(true),
-            preferred: opt("spotify"),
+            monochrome: opt(false),
+            preferred: opt("youtube-music"),
             direction: opt<"left" | "right">("right"),
-            format: opt("{artists} - {title}"),
+            format: opt("{title} - {artists}"),
             length: opt(40),
         },
         powermenu: {
@@ -143,7 +144,7 @@ const options = mkOptions(OPTIONS, {
     },
 
     launcher: {
-        width: opt(0),
+        width: opt(400),
         margin: opt(80),
         nix: {
             pkgs: opt("nixpkgs/nixos-unstable"),
@@ -153,24 +154,25 @@ const options = mkOptions(OPTIONS, {
             max: opt(16),
         },
         apps: {
-            iconSize: opt(62),
-            max: opt(6),
+            iconSize: opt(40),
+            max: opt(8),
             favorites: opt([
                 [
+                    "alacritty",
                     "firefox",
-                    "wezterm",
-                    "org.gnome.Nautilus",
-                    "org.gnome.Calendar",
-                    "spotify",
+                    "nemo",
+                    "thunderbird",
+                    "telegram",
+                    "youtube-music",
                 ],
             ]),
         },
     },
 
     overview: {
-        scale: opt(9),
+        scale: opt(8),
         workspaces: opt(7),
-        monochromeIcon: opt(true),
+        monochromeIcon: opt(false),
     },
 
     powermenu: {
@@ -178,7 +180,7 @@ const options = mkOptions(OPTIONS, {
         reboot: opt("systemctl reboot"),
         logout: opt("pkill Hyprland"),
         shutdown: opt("shutdown now"),
-        layout: opt<"line" | "box">("line"),
+        layout: opt<"line" | "box">("box"),
         labels: opt(true),
     },
 
@@ -202,10 +204,10 @@ const options = mkOptions(OPTIONS, {
             interval: opt(60_000),
             unit: opt<"metric" | "imperial" | "standard">("metric"),
             key: opt<string>(
-                JSON.parse(Utils.readFile(`${App.configDir}/.weather`) || "{}")?.key || "",
+                JSON.parse(Utils.readFile(`~/.weather`) || "{}")?.key || "",
             ),
             cities: opt<Array<number>>(
-                JSON.parse(Utils.readFile(`${App.configDir}/.weather`) || "{}")?.cities || [],
+                JSON.parse(Utils.readFile(`~/.weather`) || "{}")?.cities || [],
             ),
         },
     },
