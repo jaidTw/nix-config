@@ -93,7 +93,7 @@
       };
 
       monitor = [
-        "eDP-1,2880x1920@60,auto,2"
+        "eDP-1,2880x1920@60,auto,2,bitdepth,10"
       ];
 
       general = {
