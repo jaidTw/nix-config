@@ -3,6 +3,7 @@
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
 {
+  lib,
   pkgs,
   config,
   asztal,
@@ -23,12 +24,17 @@
     })
   ];
 
-  # Use the systemd-boot EFI boot loader.
-  boot.loader = {
-    systemd-boot.enable = true;
-    timeout = 1;
-    efi.canTouchEfiVariables = true;
+  boot.lanzaboote = {
+    enable = true;
+    pkiBundle = "/etc/secureboot";
   };
+
+  boot.loader = {
+    efi.canTouchEfiVariables = true;
+    systemd-boot.enable = lib.mkForce false;
+    timeout = 1;
+  };
+
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.kernelPatches = [
     {
@@ -91,7 +97,7 @@
       hyprlock.fprintAuth = true;
       polkit-1.fprintAuth = true;
       sudo.fprintAuth = true;
-      ags = { };
+      ags.fprintAuth = false;
     };
     rtkit.enable = true;
     sudo = {
@@ -172,6 +178,7 @@
     pkg-config
     python3
     rustup
+    sbctl
     socat
     unar
     unzip

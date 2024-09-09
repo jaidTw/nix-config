@@ -13,12 +13,15 @@
     catppuccin.url = "github:catppuccin/nix";
     ags.url = "github:Aylur/ags";
     matugen.url = "github:InioX/matugen?ref=v2.2.0";
+    lanzaboote.url = "github:nix-community/lanzaboote/v0.4.1";
+    lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
     {
       self,
       catppuccin,
+      lanzaboote,
       nixpkgs,
       nix-darwin,
       nixos-hardware,
@@ -40,6 +43,7 @@
           ./configuration.nix
           ./virtualisation.nix
           ./hardware/FW13-Ryzen7040/hardware-configuration.nix
+          lanzaboote.nixosModules.lanzaboote
           catppuccin.nixosModules.catppuccin
           nixos-hardware.nixosModules.framework-13-7040-amd
           home-manager.nixosModules.home-manager
