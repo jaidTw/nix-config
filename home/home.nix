@@ -38,7 +38,6 @@ in
       networkmanager_dmenu
       nomacs
       obs-studio
-      playerctl
       slack
       telegram-desktop
       tig

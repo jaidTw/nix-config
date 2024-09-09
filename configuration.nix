@@ -132,7 +132,7 @@
       alsa.support32Bit = true;
       pulse.enable = true;
     };
-    #playerctld.enable = true;
+    playerctld.enable = true;
     samba-wsdd.enable = true;
     thermald.enable = true;
     upower.enable = true;
@@ -316,5 +316,6 @@
   # and migrated your data accordingly.
   #
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
+  nixpkgs.hostPlatform = "x86_64-linux";
   system.stateVersion = "24.05"; # Did you read the comment?
 }

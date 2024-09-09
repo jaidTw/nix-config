@@ -34,7 +34,6 @@
       };
       # for nixos module home-manager installations
       nixosConfigurations.FW13-nix = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
         specialArgs = {
           inherit inputs;
           asztal = self.packages.x86_64-linux.default;
