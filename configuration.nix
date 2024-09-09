@@ -15,6 +15,14 @@
     "flakes"
   ];
 
+  nixpkgs.overlays = [
+    (final: prev: {
+      google-chrome = prev.google-chrome.override {
+        commandLineArgs = "--enable-features=TouchpadOverscrollHistoryNavigation --enable-wayland-ime";
+      };
+    })
+  ];
+
   # Use the systemd-boot EFI boot loader.
   boot.loader = {
     systemd-boot.enable = true;
