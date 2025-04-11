@@ -10,7 +10,7 @@ let
   cursorTheme = {
     name = "catppuccin-frappe-lavender-cursors";
     package = pkgs.catppuccin-cursors.frappeLavender;
-    size = 40;
+    size = 24;
   };
   theme = {
     name = "Fluent-grey-Dark";
@@ -19,37 +19,51 @@ let
 in
 {
   imports = [
-    ./desktop/hyprland.nix
-    ./desktop/hyprlock.nix
-    ./desktop/rofi.nix
     ./nixvim.nix
     ./shell.nix
     ./tmux.nix
-    inputs.catppuccin.homeManagerModules.catppuccin
-    inputs.ags.homeManagerModules.default
+    inputs.catppuccin.homeModules.catppuccin
+  ];
+
+  nixpkgs.config.allowUnfree = true;
+  nixpkgs.overlays = [
+    (final: prev: {
+      google-chrome = prev.google-chrome.override {
+        commandLineArgs = [
+          "--enable-features=TouchpadOverscrollHistoryNavigation"
+        ];
+      };
+    })
   ];
 
   home = {
     stateVersion = "24.05";
     packages = with pkgs; [
       acpi
+      devenv
+      evince
       google-chrome
       nemo
-      networkmanager_dmenu
       nomacs
       obs-studio
+      qpdfview
       slack
       telegram-desktop
       tig
       youtube-music
       zed-editor
+      zoom-us
+      gnomeExtensions.kimpanel
       iconTheme.package
       theme.package
       cursorTheme.package
+      parsec-bin
     ];
     sessionVariables = {
       XCURSOR_THEME = cursorTheme.name;
       XCURSOR_SIZE = "${toString cursorTheme.size}";
+      GTK_IM_MODULE = "fcitx";
+      QT_IM_MODULE = "fcitx";
     };
   };
   catppuccin.enable = true;
@@ -82,19 +96,11 @@ in
   };
 
   programs = {
-    ags = {
-      enable = true;
-      configDir = ./desktop/ags;
-      extraPackages = with pkgs; [
-        gtksourceview
-        webkitgtk
-        accountsservice
-      ];
-    };
     alacritty = {
       enable = true;
       settings = {
-        window.opacity = 0.8;
+        window.opacity = 0.9;
+        window.decorations = "None";
         font.normal.family = "MesloLGS Nerd Font";
         font.size = 14;
       };
@@ -102,19 +108,13 @@ in
     firefox.enable = true;
     fd.enable = true;
     mpv.enable = true;
-    thunderbird = {
-      enable = true;
-      profiles = {
-        "jaid" = {
-          isDefault = true;
-        };
-      };
-    };
     wlogout.enable = true;
   };
   services = {
-    easyeffects.enable = true;
-    easyeffects.preset = "Gracefus+Edits";
+    easyeffects = {
+      enable = true;
+      preset = "Gracefus+Edits";
+    };
     udiskie = {
       enable = true;
       notify = true;

@@ -22,8 +22,9 @@
     libnotify
     nwg-look
     nwg-displays
+    okular
     pavucontrol
-    qt5ct
+    libsForQt5.qt5ct
     qt6ct
     swww
     udiskie
@@ -68,14 +69,14 @@
     systemd.enable = true;
     enable = true;
 
-    plugins = with pkgs; [ hyprlandPlugins.hyprexpo ];
+    #plugins = with pkgs; [ hyprlandPlugins.hyprexpo ];
 
     settings = {
       "$terminal" = "alacritty";
       "$filemanager" = "nemo";
       "$menu" = "rofi";
       "$mod" = "SUPER";
-      "$browser" = "firefox";
+      "$browser" = "google-chrome-stable";
 
       input = {
         touchpad = {
@@ -111,10 +112,12 @@
         rounding = 10;
         active_opacity = 1.0;
         inactive_opacity = 1.0;
-        drop_shadow = true;
-        shadow_range = 4;
-        shadow_render_power = 3;
-        "col.shadow" = "rgba(1a1a1aee)";
+        shadow = {
+          enabled = true;
+          color = "rgba(1a1a1aee)";
+          range = 4;
+          render_power = 3;
+        };
         blur = {
           enabled = true;
           size = 3;
@@ -145,34 +148,34 @@
         new_status = "master";
       };
 
-      plugin = {
-        hyprexpo = {
-          columns = 3;
-          gap_size = 5;
-          bg_col = "rgb(111111)";
-          workspace_method = "current"; # [center/first] [workspace] e.g. first 1 or center m+1
-
-          enable_gesture = true; # laptop touchpad
-          gesture_fingers = 3; # 3 or 4
-          gesture_distance = 300; # how far is the "max"
-          gesture_positive = true; # positive = swipe down. Negative = swipe up.
-        };
-      };
+      # plugin = {
+      #   hyprexpo = {
+      #     columns = 3;
+      #     gap_size = 5;
+      #     bg_col = "rgb(111111)";
+      #     workspace_method = "current"; # [center/first] [workspace] e.g. first 1 or center m+1
+      #
+      #     enable_gesture = true; # laptop touchpad
+      #     gesture_fingers = 3; # 3 or 4
+      #     gesture_distance = 300; # how far is the "max"
+      #     gesture_positive = true; # positive = swipe down. Negative = swipe up.
+      #   };
+      # };
 
       exec-once = [
         #"/etc/nixos/home/desktop/migrate-workspaces.sh"
         "playerctld daemon"
         "ags -b hypr"
         "hypridle"
-        "hyprctl setcursor catppuccin-frappe-lavender-cursors 36"
+        "hyprctl setcursor catppuccin-frappe-lavender-cursors 24"
         "fcitx5 -d -r"
       ];
 
       env = [
         "HYPRCURSOR_THEME, catppuccin-frappe-lavender-cursors"
         "GDK_SCALE, 2"
-        "XCURSOR_SIZE, 18"
-        "HYPRCURSOR_SIZE, 36"
+        "XCURSOR_SIZE, 24"
+        "HYPRCURSOR_SIZE, 24"
 
         "GDK_BACKEND,wayland,x11,*"
         "QT_QPA_PLATFORM,wayland;xcb"
@@ -197,7 +200,7 @@
           "$mod, E, exec, $filemanager"
           "$mod, F, exec, $browser"
           "$mod, J, togglesplit"
-          "$mod, L, exec, -t powermenu"
+          "$mod, L, ${e} -t powermenu"
           "$mod, M, exit"
           "$mod, P, pseudo"
           "$mod SHIFT, P, pin"
@@ -206,6 +209,7 @@
           "$mod, F11, fullscreen"
           "ALT, F4, killactive"
           "ALT, Tab, focuscurrentorlast"
+          "ALT, T, bringactivetotop"
 
           "$mod, left, movefocus, l"
           "$mod, right, movefocus, r"
@@ -229,7 +233,7 @@
           ",XF86PowerOff,  ${e} -r 'powermenu.shutdown()'"
           "$mod, V, togglefloating"
           ", Print, exec, grimblast copy area"
-          "$mod, grave, hyprexpo:expo, toggle"
+          # "$mod, grave, hyprexpo:expo, toggle"
         ]
         ++ (
           # workspaces
@@ -308,7 +312,6 @@
       windowrulev2 = [
         "pseudo, class:(fcitx)"
         "suppressevent maximize, class:.*"
-        "float, class:(Zoom Workplace)"
       ];
 
     };

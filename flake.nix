@@ -11,9 +11,9 @@
     nixvim.url = "github:nix-community/nixvim";
     nixvim.inputs.nixpkgs.follows = "nixpkgs";
     catppuccin.url = "github:catppuccin/nix";
-    ags.url = "github:Aylur/ags";
+    ags.url = "github:Aylur/ags/v1";
     matugen.url = "github:InioX/matugen?ref=v2.2.0";
-    lanzaboote.url = "github:nix-community/lanzaboote/v0.4.1";
+    lanzaboote.url = "github:nix-community/lanzaboote/v0.4.2";
     lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
   };
 
@@ -47,7 +47,6 @@
           nixos-hardware.nixosModules.framework-13-7040-amd
           home-manager.nixosModules.home-manager
           {
-            home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.jaid = import ./home/home.nix;
             home-manager.extraSpecialArgs = {

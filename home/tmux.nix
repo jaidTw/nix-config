@@ -86,7 +86,7 @@
           set -g @catppuccin_window_current_fill "number"
           set -g @catppuccin_window_current_text "#W"
 
-          set -g @catppuccin_status_modules_right "user host session"
+          set -g @catppuccin_status_modules_right "directory user host session"
         '';
       }
       yank

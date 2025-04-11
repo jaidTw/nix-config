@@ -14,7 +14,7 @@
 
         background = [
           {
-            path = "~/wallpaper/lock.jpg";
+            path = "~/wallpaper/lock.png";
             blur_passes = 0;
             blur_size = 0;
           }
@@ -29,12 +29,12 @@
             dots_spacing = 0.15; # Scale of dots' absolute size, 0.0 - 1.0
             dots_center = false;
             dots_rounding = -1; # -1 default circle, -2 follow input-field rounding
-            outer_color = "rgb(0, 0, 0, 0)";
-            inner_color = "rgb(0, 0, 0, 0.2)";
+            outer_color = "rgb(0, 0, 0)";
+            inner_color = "rgb(255, 255, 255)";
             font_color = "rgb(10, 10, 10)";
             fade_on_empty = true;
             fade_timeout = 1000; # Milliseconds before fade_on_empty is triggered.
-            placeholder_text = "<i>input Password...</i>"; # Text rendered in the input box when it's empty.
+            placeholder_text = "<i>Password...</i>"; # Text rendered in the input box when it's empty.
             hide_input = false;
             rounding = -1; # -1 means complete rounding (circle/oval)
             check_color = "rgb(204, 136, 34)";
@@ -48,7 +48,7 @@
             invert_numlock = false; # change color if numlock is off
             swap_font_color = false; # see below
 
-            position = "-800, -120";
+            position = "-600, 80";
             halign = "center";
             valign = "center";
           }
@@ -56,11 +56,11 @@
 
         label = [
           {
-            text = "cmd[update:10000] echo \"お帰りなさいませ、$(whoami)さま\"";
+            text = "cmd[update:10000] echo \"お帰りなさいませ、$(whoami)\"";
             color = "rgba(242, 243, 244, 0.75)";
             font_size = 42;
             font_family = "Noto Sans CJK";
-            position = "-800, 10";
+            position = "-600, 210";
             halign = "center";
             valign = "center";
           }
@@ -71,7 +71,7 @@
             color = "rgba(242, 243, 244, 0.75)";
             font_size = 42;
             font_family = "Montserrat";
-            position = "-800, 300";
+            position = "-600, 500";
             halign = "center";
             valign = "center";
           }
@@ -82,7 +82,7 @@
             color = "rgba(242, 243, 244, 0.75)";
             font_size = 130;
             font_family = "Motserrat Extrabold";
-            position = "-800, 160";
+            position = "-600, 360";
             halign = "center";
             valign = "center";
           }

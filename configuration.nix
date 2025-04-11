@@ -5,8 +5,6 @@
 {
   lib,
   pkgs,
-  config,
-  asztal,
   ...
 }:
 
@@ -14,14 +12,6 @@
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
-  ];
-
-  nixpkgs.overlays = [
-    (final: prev: {
-      google-chrome = prev.google-chrome.override {
-        commandLineArgs = "--enable-features=TouchpadOverscrollHistoryNavigation --enable-wayland-ime";
-      };
-    })
   ];
 
   boot.lanzaboote = {
@@ -55,12 +45,6 @@
     };
   };
 
-  time.timeZone = "Asia/Taipei";
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
   # Select internationalisation properties.
   i18n.defaultLocale = "zh_TW.UTF-8";
   i18n.inputMethod = {
@@ -84,20 +68,14 @@
   #   useXkbConfig = true; # use xkb.options in tty.
   # };
 
-  # Configure keymap in X11
-  # services.xserver.xkb.layout = "us";
-  # services.xserver.xkb.options = "eurosign:e,caps:escape";
-
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
   security = {
     pam.services = {
       greetd.fprintAuth = true;
-      hyprlock.fprintAuth = true;
       polkit-1.fprintAuth = true;
       sudo.fprintAuth = true;
-      ags.fprintAuth = false;
     };
     rtkit.enable = true;
     sudo = {
@@ -115,14 +93,6 @@
       gnome-keyring.enable = true;
       gnome-online-accounts.enable = true;
     };
-    greetd = {
-      enable = true;
-      settings.default_session.command = pkgs.writeShellScript "greeter" ''
-        export XKB_DEFAULT_LAYOUT=${config.services.xserver.xkb.layout}
-        export XCURSOR_THEME=catppuccin-frappe-lavender-cursors
-        ${asztal}/bin/greeter
-      '';
-    };
     gvfs.enable = true;
     libinput.enable = true;
     openssh.enable = true;
@@ -131,12 +101,20 @@
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
+      socketActivation = true;
+      wireplumber.enable = true;
     };
     playerctld.enable = true;
     samba-wsdd.enable = true;
     thermald.enable = true;
+    tzupdate.enable = true;
     upower.enable = true;
     udisks2.enable = true;
+    xserver = {
+      enable = true;
+      displayManager.gdm.enable = true;
+      desktopManager.gnome.enable = true;
+    };
   };
 
   users.users.jaid = {
@@ -183,7 +161,6 @@
     unar
     unzip
     wget
-    wireguard-go
     wireguard-tools
     wl-clipboard-rs
   ];
@@ -193,15 +170,12 @@
   programs = {
     dconf.enable = true;
     gdk-pixbuf.modulePackages = [ pkgs.librsvg ];
-    hyprland = {
-      enable = true;
-      xwayland.enable = true;
-    };
-    nm-applet.enable = true;
     gnupg.agent = {
       enable = true;
       enableSSHSupport = true;
     };
+    nm-applet.enable = true;
+    seahorse.enable = true;
     trippy.enable = true;
     zsh.enable = true;
   };
@@ -214,16 +188,12 @@
       noto-fonts-color-emoji
       montserrat
       icomoon-feather
-      (nerdfonts.override {
-        fonts = [
-          "DaddyTimeMono"
-          "FiraCode"
-          "JetBrainsMono"
-          "Meslo"
-          "Ubuntu"
-          "UbuntuMono"
-        ];
-      })
+      nerd-fonts.daddy-time-mono
+      nerd-fonts.fira-code
+      nerd-fonts.jetbrains-mono
+      nerd-fonts.meslo-lg
+      nerd-fonts.ubuntu
+      nerd-fonts.ubuntu-mono
     ];
     fontconfig = {
       enable = true;
@@ -233,65 +203,15 @@
         sansSerif = [ "Ubuntu" ];
         serif = [ "Noto Serif CJK TC" ];
       };
-      localConf = ''
-        <?xml version="1.0"?>
-        <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
-        <fontconfig>
-          <alias>
-            <family>MesloLGM Nerd Font Mono</family>
-            <prefer>
-              <family>Noto Color Emoji</family>
-            </prefer>
-          </alias>
-          <alias binding="weak">
-            <family>monospace</family>
-            <prefer>
-              <family>emoji</family>
-            </prefer>
-          </alias>
-          <alias binding="weak">
-            <family>sans-serif</family>
-            <prefer>
-              <family>emoji</family>
-            </prefer>
-          </alias>
-          <alias binding="weak">
-            <family>serif</family>
-            <prefer>
-              <family>emoji</family>
-            </prefer>
-          </alias>
-        </fontconfig>
-      '';
     };
   };
 
-  systemd.tmpfiles.rules = [
-    "d '/var/cache/greeter' - greeter greeter - -"
-  ];
-
-  system.activationScripts.wallpaper =
-    let
-      wp = pkgs.writeShellScript "wp" ''
-        CACHE="/var/cache/greeter"
-        OPTS="$CACHE/options.json"
-        HOME="/home/$(find /home -maxdepth 1 -printf '%f\n' | tail -n 1)"
-
-        mkdir -p "$CACHE"
-        chown greeter:greeter $CACHE
-
-        if [[ -f "$HOME/.cache/ags/options.json" ]]; then
-          cp $HOME/.cache/ags/options.json $OPTS
-          chown greeter:greeter $OPTS
-        fi
-
-        if [[ -f "$HOME/.config/background" ]]; then
-          cp "$HOME/.config/background" $CACHE/background
-          chown greeter:greeter "$CACHE/background"
-        fi
-      '';
-    in
-    builtins.readFile wp;
+  xdg.portal = {
+    enable = true;
+    extraPortals = [
+      pkgs.xdg-desktop-portal-gnome
+    ];
+  };
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];

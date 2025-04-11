@@ -5,7 +5,7 @@
     ./nixvim.nix
     ./shell.nix
     ./tmux.nix
-    inputs.catppuccin.homeManagerModules.catppuccin
+    inputs.catppuccin.homeModules.catppuccin
   ];
 
   home.stateVersion = "24.05";

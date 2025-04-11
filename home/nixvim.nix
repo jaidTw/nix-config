@@ -105,6 +105,7 @@
       guess-indent.enable = true;
       illuminate.enable = true;
       neo-tree.enable = true;
+      web-devicons.enable = true;
       treesitter = {
         enable = true;
         settings = {
@@ -185,7 +186,7 @@
           nixd.enable = true;
           nixd.settings.formatting.command = [ "nixfmt" ];
           pylyzer.enable = true;
-          rust-analyzer = {
+          rust_analyzer = {
             installCargo = false;
             installRustc = false;
             enable = true;
