@@ -13,6 +13,7 @@
     "nix-command"
     "flakes"
   ];
+  nix.settings.trusted-users = [ "root" "jaid" ];
 
   boot.lanzaboote = {
     enable = true;
@@ -133,6 +134,7 @@
 
   # List packages installed in system profile. To search, run:
   environment.systemPackages = with pkgs; [
+    linuxPackages_latest.perf
     brightnessctl
     cmake
     clang

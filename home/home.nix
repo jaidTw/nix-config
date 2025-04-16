@@ -45,6 +45,8 @@ in
       evince
       google-chrome
       nemo
+      nil
+      nixd
       nomacs
       obs-studio
       qpdfview
@@ -52,7 +54,6 @@ in
       telegram-desktop
       tig
       youtube-music
-      zed-editor
       zoom-us
       gnomeExtensions.kimpanel
       iconTheme.package
