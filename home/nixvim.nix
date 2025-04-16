@@ -185,7 +185,7 @@
           clangd.enable = true;
           nixd.enable = true;
           nixd.settings.formatting.command = [ "nixfmt" ];
-          pylyzer.enable = true;
+          pyright.enable = true;
           rust_analyzer = {
             installCargo = false;
             installRustc = false;

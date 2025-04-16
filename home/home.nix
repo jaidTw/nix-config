@@ -19,10 +19,11 @@ let
 in
 {
   imports = [
+    inputs.catppuccin.homeModules.catppuccin
     ./nixvim.nix
+    ./zed.nix
     ./shell.nix
     ./tmux.nix
-    inputs.catppuccin.homeModules.catppuccin
   ];
 
   nixpkgs.config.allowUnfree = true;
@@ -112,7 +113,7 @@ in
   };
   services = {
     easyeffects = {
-      enable = true;
+      enable = false;
       preset = "Gracefus+Edits";
     };
     udiskie = {

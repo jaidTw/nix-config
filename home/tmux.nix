@@ -1,13 +1,12 @@
 # tmux.nix
-
-{ pkgs, ... }:
-
 {
   programs.tmux = {
     enable = true;
     baseIndex = 1;
     clock24 = true;
     sensibleOnTop = false;
+    keyMode = "vi";
+    mouse = true;
     extraConfig = ''
       set -as terminal-overrides ",alacritty*:Tc"
 
@@ -67,29 +66,18 @@
       bind -T copy-mode-vi H send -X start-of-line
       bind -T copy-mode-vi L send -X end-of-line
 
-      set -g status-key vi
-      set -g mode-keys vi
-
       bind b list-buffers     # list paste buffers
       bind p paste-buffer -p  # paste from the top paste buffer
       bind P choose-buffer    # choose which buffer to paste from
     '';
     terminal = "tmux-256color";
-    plugins = with pkgs.tmuxPlugins; [
-      {
-        plugin = catppuccin;
-        extraConfig = ''
-          set -g @catppuccin_flavor 'macchiato'
-
-          set -g @catppuccin_window_default_fill "number"
-          set -g @catppuccin_window_default_text "#W"
-          set -g @catppuccin_window_current_fill "number"
-          set -g @catppuccin_window_current_text "#W"
-
-          set -g @catppuccin_status_modules_right "directory user host session"
-        '';
-      }
-      yank
-    ];
   };
+  catppuccin.tmux.extraConfig = ''
+    set -g @catppuccin_window_default_fill "number"
+    set -g @catppuccin_window_default_text "#W"
+    set -g @catppuccin_window_current_fill "number"
+    set -g @catppuccin_window_current_text "#W"
+
+    set -g @catppuccin_status_modules_right "directory user host session"
+  '';
 }
