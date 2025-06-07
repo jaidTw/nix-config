@@ -25,7 +25,12 @@
           };
         };
         lsp = {
-          rust_analyzer.binary.path_lookup = true;
+          rust_analyzer = {
+            initialization_options = {
+              cargo.features = "all";
+            };
+            binary.path_lookup = true;
+          };
           nix.binary.path_lookup = true;
           nil = {
             initialization_options = {

@@ -111,11 +111,8 @@
     tzupdate.enable = true;
     upower.enable = true;
     udisks2.enable = true;
-    xserver = {
-      enable = true;
-      displayManager.gdm.enable = true;
-      desktopManager.gnome.enable = true;
-    };
+    displayManager.gdm.enable = true;
+    desktopManager.gnome.enable = true;
   };
 
   users.users.jaid = {
