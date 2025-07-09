@@ -41,10 +41,10 @@ in
     stateVersion = "24.05";
     packages = with pkgs; [
       acpi
+      catt
       devenv
       evince
       google-chrome
-      nemo
       nil
       nixd
       nomacs
@@ -60,6 +60,7 @@ in
       theme.package
       cursorTheme.package
       parsec-bin
+      fishPlugins.fzf-fish
     ];
     sessionVariables = {
       XCURSOR_THEME = cursorTheme.name;
@@ -107,7 +108,6 @@ in
         font.size = 14;
       };
     };
-    firefox.enable = true;
     fd.enable = true;
     mpv.enable = true;
     wlogout.enable = true;

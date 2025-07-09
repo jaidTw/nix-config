@@ -13,7 +13,10 @@
     "nix-command"
     "flakes"
   ];
-  nix.settings.trusted-users = [ "root" "jaid" ];
+  nix.settings.trusted-users = [
+    "root"
+    "jaid"
+  ];
 
   boot.lanzaboote = {
     enable = true;
@@ -38,7 +41,13 @@
   ];
 
   networking.hostName = "FW13-nix"; # Define your hostname.
-  networking.firewall.checkReversePath = false;
+  networking.firewall = {
+    enable = true;
+    extraInputRules = ''
+      -s 192.168.1.0/24 -j ACCEPT
+    '';
+    checkReversePath = false;
+  };
   networking.networkmanager = {
     enable = true;
     wifi = {
@@ -125,7 +134,7 @@
       "docker"
       "libvirtd"
     ];
-    shell = pkgs.zsh;
+    shell = pkgs.fish;
   };
   nixpkgs.config.allowUnfree = true;
 
@@ -149,6 +158,7 @@
     killall
     llvm
     neofetch
+    nfs-utils
     ninja
     nixfmt-rfc-style
     p7zip
@@ -177,6 +187,7 @@
     seahorse.enable = true;
     trippy.enable = true;
     zsh.enable = true;
+    fish.enable = true;
   };
 
   fonts = {

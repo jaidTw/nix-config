@@ -1,4 +1,4 @@
-# zsh.nix
+# zed.nix
 
 {
   programs = {

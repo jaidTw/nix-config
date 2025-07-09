@@ -1,15 +1,20 @@
 # zsh.nix
 
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
-{
+{ 
+  home = {
+    packages = [
+      pkgs.fishPlugins.fzf-fish
+    ];
+  };
   programs = {
     bat.enable = true;
     bottom.enable = true;
     fzf = {
       enable = true;
-      changeDirWidgetCommand = "fd --type d";
-      changeDirWidgetOptions = [ "--preview 'lsd --tree {} | head -200'" ];
+      changeDirWidgetCommand = "fd --type d --hidden --exclude .git";
+      changeDirWidgetOptions = [ "--preview 'lsd --icon=always --color=always --tree {} | head -200'" ];
       defaultCommand = "fd --type f --follow --hidden --exclude .git";
       fileWidgetCommand = "fd --type f --follow --hidden --exclude .git";
       fileWidgetOptions = [
@@ -24,7 +29,6 @@
         "--sort"
         "--exact"
       ];
-      #tmux.enableShellIntegration = true;
     };
     git = {
       enable = true;
@@ -38,18 +42,26 @@
     };
     jq.enable = true;
     lazygit.enable = true;
-    lsd.enable = true;
+    lsd = {
+      enable = true;
+      enableBashIntegration = true;
+      enableZshIntegration = true;
+      enableFishIntegration = true;
+    };
     man.enable = true;
     ripgrep.enable = true;
 
     starship = {
       enable = true;
+      enableBashIntegration = true;
+      enableZshIntegration = true;
+      enableFishIntegration = true;
       settings = {
         format = ''
-          [╭─](white)$os$direnv$directory$git_branch$git_state$git_status$status
+          [╭─](white) ($shell)on $os$direnv$directory$git_branch$git_state$git_status$status
           [╰─](white)[❯](bold green) 
         '';
-        right_format = ''$rust$cmd_duration'';
+        right_format = ''$java$lua$julia$go$nodejs$ruby$rust$go$python$c$cpp$cmd_duration'';
         add_newline = false;
         directory.style = "bold fg:105";
         directory.truncate_to_repo = false;
@@ -59,7 +71,17 @@
           disabled = false;
           style = "bold fg:45";
           symbols.NixOS = " ";
-          symbols.Macos = " ";
+          symbols.Macos = " ";
+        };
+        python.symbol = " ";
+        rust.symbol = " ";
+        shell = {
+          disabled = false;
+          bash_indicator = "bash";
+          fish_indicator = "fish";
+          zsh_indicator = "zsh";
+          nu_indicator = "nu";
+          style = "cyan bold";
         };
         status.disabled = false;
       };
@@ -82,10 +104,10 @@
             zstyle ':completion:*' menu no
             # preview directory's content with lsd when completing cd
             zstyle ':fzf-tab:*' popup-min-size 120 16
-            zstyle ':fzf-tab:complete:cd:*' fzf-preview 'lsd -1 --color=always $realpath'
+            zstyle ':fzf-tab:complete:cd:*' fzf-preview 'lsd -1 --icon=always --color=always $realpath'
             zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word'
             zstyle ':fzf-tab:complete:(-command-|-parameter-|-brace-parameter-|export|unset|expand):*' \
-            	fzf-preview 'echo ''${(P)word}'
+                    fzf-preview 'echo ''${(P)word}'
             # switch group using `<` and `>`
             zstyle ':fzf-tab:*' switch-group '<' '>'
             # use tmux popup
@@ -95,10 +117,10 @@
             enable-fzf-tab
           '';
         in
-        lib.mkMerge [
-          zshConfigEarlyInit
-          zshConfig
-        ];
+          lib.mkMerge [
+            zshConfigEarlyInit
+            zshConfig
+          ];
       envExtra = ''
         export VISUAL=nvim
       '';
@@ -129,7 +151,42 @@
         MANPAGER = "sh -c 'col -bx | bat -l man -p'";
       };
     };
-    zoxide.enable = true;
-    zoxide.enableZshIntegration = true;
+    fish = {
+      enable = true;
+      generateCompletions = true;
+      shellAliases = {
+        cat = "bat -p";
+        btm = "btm --battery";
+        df = "duf";
+        du = "dust";
+        htop = "btm";
+        less = "bat -p";
+        ping = "trip";
+        traceroute = "trip";
+        mtr = "trip";
+      };
+      shellInit = ''
+    set --export fzf_preview_dir_cmd lsd -A --color=always --icon=always
+    set --export fzf_fd_opts --follow --hidden --exclude .git
+      '';
+      shellInitLast = ''
+    set -e FZF_DEFAULT_OPTS
+    set -e FZF_CTRL_T_OPTS
+    set -e FZF_CTRL_R_OPTS
+    set -e FZF_ALT_C_OPTS
+    set -e FZF_CTRL_T_COMMAND
+    set -e FZF_ALT_C_COMMAND
+    bind -e ctrl-t
+    bind -e -M insert ctrl-t
+    fzf_configure_bindings --directory=\ct --processes=\cp
+      '';
+    };
+    zoxide = {
+      enable = true;
+      options = ["--cmd cd"];
+      enableZshIntegration = true;
+      enableFishIntegration = true;
+      enableBashIntegration = true;
+    };
   };
 }

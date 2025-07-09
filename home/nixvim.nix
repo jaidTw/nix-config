@@ -13,6 +13,11 @@
     vimdiffAlias = true;
     clipboard.register = "unnamedplus";
     clipboard.providers.wl-copy.enable = true;
+    diagnostic.settings = {
+      virtual_lines = {
+        current_line = true;
+      };
+    };
     colorschemes.catppuccin = {
       enable = true;
       settings.transparent_background = true;
@@ -185,7 +190,7 @@
           clangd.enable = true;
           nixd.enable = true;
           nixd.settings.formatting.command = [ "nixfmt" ];
-          pyright.enable = true;
+          basedpyright.enable = true;
           rust_analyzer = {
             installCargo = false;
             installRustc = false;
@@ -194,7 +199,6 @@
         };
       };
       lsp-status.enable = true;
-      lsp-lines.enable = true;
       lspkind.enable = true;
     };
     performance = {
