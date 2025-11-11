@@ -15,7 +15,7 @@
           version = "2";
           default_model = {
             provider = "google";
-            model = "gemini-2.0-flash";
+            model = "gemini-2.5-pro";
           };
           default_width = 400;
         };

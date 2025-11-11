@@ -1,9 +1,9 @@
 # home.nix
 
-{ pkgs, inputs, ... }:
+{ pkgs, inputs, lib, ... }:
 let
 
-  iconTheme = {
+  iconTheme = lib.mkForce {
     name = "Papirus";
     package = pkgs.papirus-icon-theme;
   };
@@ -44,6 +44,8 @@ in
       catt
       devenv
       evince
+      firefox
+      gemini-cli
       google-chrome
       nil
       nixd
@@ -56,9 +58,6 @@ in
       youtube-music
       zoom-us
       gnomeExtensions.kimpanel
-      iconTheme.package
-      theme.package
-      cursorTheme.package
       parsec-bin
       fishPlugins.fzf-fish
     ];
@@ -109,7 +108,12 @@ in
       };
     };
     fd.enable = true;
-    mpv.enable = true;
+    mpv = {
+      enable = true;
+      config = {
+        hwdec = "auto";
+      };
+    };
     wlogout.enable = true;
   };
   services = {
